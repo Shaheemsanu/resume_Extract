@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .file-type {
+            margin-bottom: 15px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            font-size: 0.875em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resume Extractor</h1>
+        <form id="resumeForm" action="/process_resume" method="POST" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="doc" accept=".pdf, .docx, .txt">
+            <div class="file-type">
+                <p>Select filetype:</p>
+                <label><input type="radio" name="document_type" value="pdf"> .pdf</label>
+                <label><input type="radio" name="document_type" value="docx"> .docx</label>
+                <label><input type="radio" name="document_type" value="txt"> .txt</label>
+            </div>
+            <input type="submit" value="Submit">
+            <div id="error" class="error"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('resumeForm').addEventListener('submit', function(event) {
+            var fileInput = document.getElementById('fileInput');
+            var errorDiv = document.getElementById('error');
+            var selectedType = document.querySelector('input[name="document_type"]:checked');
+
+            if (fileInput.files.length === 0) {
+                event.preventDefault(); // Prevent form submission
+                errorDiv.textContent = 'Please upload a file.';
+            } else if (!selectedType) {
+                event.preventDefault(); // Prevent form submission
+                errorDiv.textContent = 'Please select a file type.';
+            } else {
+                var file = fileInput.files[0];
+                var fileExtension = file.name.split('.').pop();
+                var selectedTypeValue = selectedType.value;
+
+                if (fileExtension !== selectedTypeValue) {
+                    event.preventDefault(); // Prevent form submission
+                    errorDiv.textContent = 'Uploaded file does not match selected file type.';
+                } else {
+                    errorDiv.textContent = ''; // Clear any previous error messages
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+   
